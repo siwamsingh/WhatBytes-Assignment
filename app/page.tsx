@@ -10,8 +10,8 @@ export default function Home() {
     <div className="flex min-h-screen flex-col">
       <Header />
 
-      <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-4 py-6 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-start gap-5 lg:flex-row">
+      <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 py-6 sm:px-6 lg:px-8">
+        <div className="flex flex-col items-start lg:flex-row">
           <Suspense
             fallback={
               <div className="min-w-0 flex-1">
@@ -20,14 +20,15 @@ export default function Home() {
             }
           >
             <div className="flex w-full flex-col items-start gap-5 lg:flex-row">
-              <div className="w-full shrink-0 lg:w-[165px]">
+              {/* Filters on the left */}
+              <div className="w-full sm:w-fit shrink-0 ">
                 <Filters />
               </div>
+
+              {/* Product listing on the right */}
               <div className="min-w-0 flex-1">
                 <ProductListing />
               </div>
-
-              
             </div>
           </Suspense>
         </div>

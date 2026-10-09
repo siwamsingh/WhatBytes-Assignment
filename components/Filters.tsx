@@ -86,7 +86,7 @@ export default function Filters() {
   return (
     <aside className="w-full shrink-0 space-y-5 lg:w-[165px]">
       {/* Primary filter panel */}
-      <section className="rounded-lg bg-primary px-3.5 py-3 text-white shadow-sm">
+      <section className="rounded-sm bg-primary px-5 py-3 text-white shadow-sm">
         <h2 className="mb-2 text-base font-semibold">Filters</h2>
 
         <fieldset>
