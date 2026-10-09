@@ -1,26 +1,168 @@
+
 @import "tailwindcss";
 
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+
+  /* Brand */
+  --primary: #075bb5;
+  --primary-hover: #064b96;
+  --primary-light: #e8f2ff;
+
+  /* Navy */
+  --navy: #062d5c;
+  --navy-dark: #03234b;
+
+  /* Backgrounds */
+  --background: #f5f8fc;
+  --surface: #ffffff;
+  --surface-secondary: #edf3fa;
+
+  /* Text */
+  --foreground: #10243e;
+  --text-secondary: #52647a;
+  --text-muted: #7b8ba0;
+  --text-inverse: #ffffff;
+
+  /* Borders */
+  --border: #dce5ef;
+  --border-strong: #b9c9dc;
+
+  /* Status */
+  --success: #15803d;
+  --error: #dc2626;
+  --warning: #d97706;
+
+  /* Focus */
+  --ring: #60a5fa;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgb(16 36 62 / 8%);
+  --shadow-md: 0 4px 12px rgb(16 36 62 / 10%);
+  --shadow-lg: 0 10px 30px rgb(16 36 62 / 12%);
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+
+  /* Layout */
+  --container-width: 1440px;
+  --header-height: 60px;
 }
+
 
 @theme inline {
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-light: var(--primary-light);
+
+  --color-navy: var(--navy);
+  --color-navy-dark: var(--navy-dark);
+
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-secondary: var(--surface-secondary);
+
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-inverse: var(--text-inverse);
+
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+
+  --color-success: var(--success);
+  --color-error: var(--error);
+  --color-warning: var(--warning);
+  --color-ring: var(--ring);
+
+  /* Typography */
+  --font-sans: Arial, Helvetica, sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
+
+  /* Shadows */
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+
+  /* Radius */
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+
+  /* Layout */
+  --container-7xl: var(--container-width);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
+  margin: 0;
+  min-height: 100vh;
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin-top: 0;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  line-height: 1.25;
+}
+
+
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--primary-light);
+  color: var(--navy);
 }
