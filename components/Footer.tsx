@@ -12,7 +12,7 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-7 py-5">
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
           {/* Filters */}
-          <div>
+          <div className="w-fit mx-auto">
             <h2 className="mb-3 text-sm font-semibold">
               Filters
             </h2>
@@ -36,7 +36,7 @@ export default function Footer() {
           </div>
 
           {/* About Us */}
-          <div>
+          <div className="w-fit mx-auto">
             <h2 className="mb-3 text-sm font-semibold">
               About Us
             </h2>
@@ -57,7 +57,7 @@ export default function Footer() {
           </div>
 
           {/* Follow Us */}
-          <div>
+          <div className="w-fit mx-auto">
             <h2 className="mb-3 text-sm font-semibold">
               Follow Us
             </h2>

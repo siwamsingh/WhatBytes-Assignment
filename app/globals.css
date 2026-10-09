@@ -156,13 +156,3 @@ h4 {
   line-height: 1.25;
 }
 
-
-:focus-visible {
-  outline: 2px solid var(--ring);
-  outline-offset: 3px;
-}
-
-::selection {
-  background: var(--primary-light);
-  color: var(--navy);
-}
