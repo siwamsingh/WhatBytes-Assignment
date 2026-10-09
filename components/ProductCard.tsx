@@ -26,17 +26,17 @@ export default function ProductCard({
 
   return (
     <article
-      className={`overflow-hidden rounded-sm border border-border bg-white ${
+      className={`overflow-hidden h-full rounded-sm border border-border bg-white ${
         featured ? "flex flex-col sm:flex-row" : "flex flex-col"
       }`}
     >
       {/* Product Image */}
       <Link
         href={`/product/${product.id}`}
-        className={`relative block bg-white ${
+        className={`relative block shrink-0 bg-white ${
           featured
-            ? "h-56 w-full shrink-0 sm:h-auto sm:w-2/5"
-            : "h-24 w-full"
+            ? "aspect-[5/2] w-full sm:aspect-auto sm:h-auto sm:w-2/5"
+            : "aspect-[4/2] w-full"
         }`}
       >
         <Image
