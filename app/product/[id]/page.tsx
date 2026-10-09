@@ -1,210 +1,270 @@
+
 "use client";
 
-import { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { Suspense, useState } from "react";
+import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { products } from "../../../data/products";
+import {
+  ArrowLeft,
+  ShoppingCart,
+  Check,
+  Star,
+  Package,
+  ShieldCheck,
+} from "lucide-react";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { products } from "@/data/products";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { addToCart } from "@/store/cartSlice";
 
-export default function ProductDetailPage() {
+function ProductDetails() {
   const params = useParams<{ id: string }>();
-  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const [quantity, setQuantity] = useState(1);
 
   const product = products.find((item) => item.id === params.id);
-  const [quantity, setQuantity] = useState(1);
+  const cartItems = useAppSelector((state) => state.cart.items);
 
   if (!product) {
     return (
-      <div className="mx-auto max-w-7xl px-4 py-16 text-center">
-        <h1 className="text-2xl font-bold text-foreground">
-          Product not found
-        </h1>
-        <p className="mt-2 text-text-secondary">
-          The product you are looking for does not exist.
-        </p>
-        <Link
-          href="/"
-          className="mt-5 inline-block rounded-md bg-primary px-5 py-2 text-sm font-medium text-white hover:bg-primary-hover"
-        >
-          Back to products
-        </Link>
-      </div>
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
+        <div className="rounded-sm border border-border bg-white px-6 py-12 text-center">
+          <h1 className="text-2xl font-bold text-navy">
+            Product not found
+          </h1>
+          <p className="mt-2 text-sm text-text-secondary">
+            The product you are looking for may no longer be available.
+          </p>
+          <Link
+            href="/"
+            className="mt-6 inline-flex h-10 items-center justify-center rounded-sm bg-primary px-5 text-sm font-semibold text-white hover:bg-primary-hover"
+          >
+            Browse products
+          </Link>
+        </div>
+      </main>
     );
   }
 
-  function handleAddToCart() {
-    if (!product) return;
+  const isInCart = cartItems.some(
+    (item) => item.productId === product.id
+  );
 
-    console.log("Add to cart:", product.title, "Quantity:", quantity);
-  }
+  const handleAddToCart = () => {
+    if (isInCart || product.stock < 1) return;
+
+    for (let i = 0; i < quantity; i++) {
+      dispatch(addToCart(product.id));
+    }
+  };
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      {/* Breadcrumb */}
-      <nav className="mb-6 text-sm text-text-secondary">
-        <Link href="/" className="hover:text-primary">
-          Home
-        </Link>
-        <span className="mx-2">/</span>
-        <span className="text-foreground">{product.title}</span>
-      </nav>
+    <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
 
-      {/* Product Details */}
-      <div className="grid grid-cols-1 gap-8 rounded-xl bg-surface p-5 shadow-sm sm:p-8 md:grid-cols-2 md:gap-12">
-        {/* Product Image */}
-        <div className="relative flex min-h-[300px] items-center justify-center overflow-hidden rounded-lg bg-white sm:min-h-[420px]">
-          <Image
-            src={product.image}
-            alt={product.title}
-            fill
-            priority
-            sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-contain p-6"
-          />
-        </div>
-
-        {/* Product Information */}
-        <div className="flex flex-col py-2">
-          <p className="mb-2 text-sm font-medium text-primary">
-            {product.category}
-          </p>
-
-          <h1 className="text-2xl font-bold tracking-tight text-navy sm:text-3xl">
-            {product.title}
-          </h1>
-
-          {/* Rating */}
-          <div
-            className="mt-3 flex items-center gap-2"
-            aria-label={`Rating ${product.rating} out of 5`}
-          >
-            <span className="text-lg tracking-wide text-[#315887]">
-              {"★".repeat(Math.floor(product.rating))}
-              {"☆".repeat(5 - Math.floor(product.rating))}
-            </span>
-            <span className="text-sm text-text-secondary">
-              {product.rating.toFixed(1)} / 5
-            </span>
+      {/* Product */}
+      <article className="overflow-hidden rounded-sm border border-border bg-white">
+        <div className="grid grid-cols-1 lg:grid-cols-2">
+          {/* Product Image */}
+          <div className="flex items-center justify-center bg-surface-secondary p-5 sm:p-8 lg:p-10">
+            <div className="relative aspect-square w-full max-w-lg overflow-hidden bg-white">
+              <Image
+                src={product.image}
+                alt={product.title}
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-contain p-5 sm:p-8"
+                priority
+              />
+            </div>
           </div>
 
-          {/* Price */}
-          <p className="mt-5 text-3xl font-bold text-foreground">
-            ${product.price.toFixed(2)}
-          </p>
-
-          {/* Description */}
-          <div className="mt-6">
-            <h2 className="mb-2 text-base font-semibold text-foreground">
-              Product Description
-            </h2>
-            <p className="text-sm leading-7 text-text-secondary">
-              {product.description}
-            </p>
-          </div>
-
-          {/* Product Attributes */}
-          <div className="mt-6 space-y-3 border-y border-border py-4 text-sm">
-            <div className="flex justify-between gap-4">
-              <span className="text-text-secondary">Category</span>
-              <span className="font-medium text-foreground">
+          {/* Product Information */}
+          <div className="flex min-w-0 flex-col p-5 sm:p-8 lg:p-10">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="rounded-sm bg-surface-secondary px-3 py-1 text-xs font-medium text-text-secondary">
                 {product.category}
               </span>
+
+              {product.stock > 0 && (
+                <span className="flex items-center gap-1.5 text-xs font-medium text-success">
+                  <span className="h-1.5 w-1.5 rounded-full bg-success" />
+                  In stock
+                </span>
+              )}
             </div>
 
-            <div className="flex justify-between gap-4">
-              <span className="text-text-secondary">Brand</span>
-              <span className="font-medium text-foreground">
+            <h1 className="mt-5 text-2xl font-bold leading-tight tracking-tight text-navy sm:text-3xl lg:text-4xl">
+              {product.title}
+            </h1>
+
+            <p className="mt-3 text-sm text-text-secondary">
+              Brand:{" "}
+              <span className="font-semibold text-foreground">
                 {product.brand}
               </span>
-            </div>
+            </p>
 
-            <div className="flex justify-between gap-4">
-              <span className="text-text-secondary">Availability</span>
-              <span
-                className={
-                  product.stock > 0
-                    ? "font-medium text-success"
-                    : "font-medium text-error"
-                }
+            {/* Rating */}
+            <div className="mt-5 flex items-center gap-2">
+              <div
+                className="flex items-center gap-0.5 text-[#315887]"
+                aria-label={`Rating: ${product.rating} out of 5`}
               >
-                {product.stock > 0
-                  ? `In stock (${product.stock})`
-                  : "Out of stock"}
+                {Array.from({ length: 5 }, (_, index) => (
+                  <Star
+                    key={index}
+                    size={17}
+                    fill={
+                      index < Math.floor(product.rating)
+                        ? "currentColor"
+                        : "none"
+                    }
+                    strokeWidth={1.5}
+                  />
+                ))}
+              </div>
+
+              <span className="text-sm font-semibold text-foreground">
+                {product.rating.toFixed(1)}
+              </span>
+              <span className="text-sm text-text-muted">
+                out of 5
               </span>
             </div>
-          </div>
 
-          {/* Quantity */}
-          <div className="mt-6">
-            <label
-              htmlFor="quantity"
-              className="mb-2 block text-sm font-semibold text-foreground"
-            >
-              Quantity
-            </label>
-
-            <div className="flex h-10 w-fit items-center overflow-hidden rounded-md border border-border">
-              <button
-                type="button"
-                aria-label="Decrease quantity"
-                disabled={quantity <= 1}
-                onClick={() =>
-                  setQuantity((current) => Math.max(1, current - 1))
-                }
-                className="h-full w-10 text-lg text-foreground hover:bg-surface-secondary disabled:opacity-40"
-              >
-                −
-              </button>
-
-              <input
-                id="quantity"
-                type="number"
-                min={1}
-                max={product.stock}
-                value={quantity}
-                onChange={(event) => {
-                  const value = Number(event.target.value);
-
-                  if (value >= 1 && value <= product.stock) {
-                    setQuantity(value);
-                  }
-                }}
-                className="h-full w-12 border-x border-border text-center text-sm text-foreground outline-none"
-              />
-
-              <button
-                type="button"
-                aria-label="Increase quantity"
-                disabled={quantity >= product.stock}
-                onClick={() =>
-                  setQuantity((current) => Math.min(product.stock, current + 1))
-                }
-                className="h-full w-10 text-lg text-foreground hover:bg-surface-secondary disabled:opacity-40"
-              >
-                +
-              </button>
+            {/* Price */}
+            <div className="mt-7 border-y border-border py-5">
+              <p className="text-xs font-medium uppercase tracking-wider text-text-muted">
+                Price
+              </p>
+              <p className="mt-1 text-3xl font-bold tracking-tight text-navy sm:text-4xl">
+                ${product.price.toFixed(2)}
+              </p>
             </div>
+
+            {/* Description */}
+            <div className="mt-6">
+              <h2 className="text-sm font-semibold text-foreground">
+                Product description
+              </h2>
+              <p className="mt-2 text-sm leading-7 text-text-secondary">
+                {product.description}
+              </p>
+            </div>
+
+
+            {/* Quantity */}
+            <div className="mt-7">
+              <label
+                htmlFor="quantity"
+                className="mb-2 block text-sm font-semibold text-foreground"
+              >
+                Quantity
+              </label>
+
+              <select
+                id="quantity"
+                value={quantity}
+                onChange={(event) =>
+                  setQuantity(Number(event.target.value))
+                }
+                disabled={isInCart || product.stock < 1}
+                className="h-11 w-28 rounded-sm border border-border bg-white px-3 text-sm text-foreground outline-none transition-colors focus:border-primary disabled:cursor-not-allowed disabled:bg-surface-secondary"
+              >
+                {Array.from(
+                  { length: Math.max(0, Math.min(product.stock, 10)) },
+                  (_, index) => index + 1
+                ).map((number) => (
+                  <option key={number} value={number}>
+                    {number}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Actions */}
+            <div className="mt-6 space-y-3">
+              <button
+                type="button"
+                disabled={isInCart || product.stock < 1}
+                onClick={handleAddToCart}
+                className={`flex h-12 w-full items-center justify-center gap-2 rounded-sm px-5 text-sm font-semibold transition-colors ${
+                  isInCart || product.stock < 1
+                    ? "cursor-not-allowed bg-gray-200 text-gray-500"
+                    : "bg-primary text-white hover:bg-primary-hover"
+                }`}
+              >
+                {isInCart ? (
+                  <>
+                    <Check size={18} aria-hidden="true" />
+                    Added to Cart
+                  </>
+                ) : (
+                  <>
+                    <ShoppingCart size={18} aria-hidden="true" />
+                    Add to Cart
+                  </>
+                )}
+              </button>
+
+              {isInCart && (
+                <Link
+                  href="/cart"
+                  className="flex h-11 w-full items-center justify-center rounded-sm border border-border text-sm font-semibold text-navy transition-colors hover:bg-surface"
+                >
+                  View Cart
+                </Link>
+              )}
+
+              {!isInCart && (
+                <Link
+                  href="/cart"
+                  className="flex h-11 w-full items-center justify-center rounded-sm border border-border text-sm font-semibold text-navy transition-colors hover:bg-surface"
+                >
+                  Go to Cart
+                </Link>
+              )}
+            </div>
+
+
+            <Link
+              href="/"
+              className="mt-6 inline-flex w-fit items-center gap-2 text-sm font-medium text-text-secondary transition-colors hover:text-primary"
+            >
+              <ArrowLeft size={16} aria-hidden="true" />
+              Continue shopping
+            </Link>
           </div>
-
-          {/* Add to Cart */}
-          <button
-            type="button"
-            onClick={handleAddToCart}
-            disabled={product.stock === 0}
-            className="mt-6 flex h-11 w-full items-center justify-center rounded-md bg-primary px-6 text-sm font-semibold text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
-          >
-            {product.stock > 0 ? "Add to Cart" : "Out of Stock"}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => router.back()}
-            className="mt-3 text-sm font-medium text-text-secondary hover:text-primary sm:self-start"
-          >
-            ← Continue shopping
-          </button>
         </div>
-      </div>
-    </section>
+      </article>
+    </main>
+  );
+}
+
+export default function ProductPage() {
+  return (
+    <div className="flex min-h-screen flex-col">
+      <Header />
+
+      <Suspense
+        fallback={
+          <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-12 sm:px-6 lg:px-8">
+            <div className="animate-pulse space-y-4">
+              <div className="h-4 w-40 rounded bg-surface-secondary" />
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <div className="aspect-square rounded-sm bg-surface-secondary" />
+                <div className="h-96 rounded-sm bg-surface-secondary" />
+              </div>
+            </div>
+          </main>
+        }
+      >
+        <ProductDetails />
+      </Suspense>
+
+      <Footer />
+    </div>
   );
 }
