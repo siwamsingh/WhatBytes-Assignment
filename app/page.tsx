@@ -19,14 +19,14 @@ export default function Home() {
               </div>
             }
           >
-            <div className="flex w-full flex-col items-start gap-5 lg:flex-row">
+            <div className="flex w-full flex-col items-start gap-5 md:flex-row">
               {/* Filters on the left */}
-              <div className="w-full sm:w-fit shrink-0 ">
+              <div className="w-full md:w-fit shrink-0 ">
                 <Filters />
               </div>
 
               {/* Product listing on the right */}
-              <div className="min-w-0 flex-1">
+              <div className="min-w-0 w-full flex-1 mx-auto">
                 <ProductListing />
               </div>
             </div>

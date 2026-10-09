@@ -48,7 +48,7 @@ export default function ProductListing() {
       </h1>
 
       {filteredProducts.length > 0 ? (
-        <div className="grid grid-cols-1 items-stretch gap-3 sm:grid-cols-2 md:grid-cols-3">
+        <div className="grid grid-cols-1 items-stretch gap-3 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
           {filteredProducts.map((product) => {
             const featured = product.id === "8";
 
