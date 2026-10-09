@@ -1,8 +1,11 @@
 
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { Star, ShoppingCart } from "lucide-react";
+import { Star, ShoppingCart, Check } from "lucide-react";
 import type { Product } from "../data/products";
+import { useAppSelector } from "../store/hooks";
 
 type ProductCardProps = {
   product: Product;
@@ -15,9 +18,15 @@ export default function ProductCard({
   featured = false,
   onAddToCart,
 }: ProductCardProps) {
+  const cartItems = useAppSelector((state) => state.cart.items);
+
+  const isInCart = cartItems.some(
+    (item) => item.productId === product.id
+  );
+
   return (
     <article
-      className={`overflow-hidden rounded-md bg-white ${
+      className={`overflow-hidden rounded-sm border border-border bg-white ${
         featured ? "flex flex-col sm:flex-row" : "flex flex-col"
       }`}
     >
@@ -86,18 +95,17 @@ export default function ProductCard({
                 />
               ))}
             </div>
+
             <span className="text-xs text-text-muted">
               {product.rating.toFixed(1)}
             </span>
           </div>
         )}
 
-        {/* Description and Category for featured card */}
+        {/* Description and Category */}
         {featured && (
           <div className="mt-1 space-y-3 text-xs text-text-secondary">
-            <p className="leading-relaxed">
-              {product.description}
-            </p>
+            <p className="leading-relaxed">{product.description}</p>
 
             <div>
               <p className="mb-1 text-text-muted">Category</p>
@@ -111,16 +119,37 @@ export default function ProductCard({
         {/* Add to Cart */}
         <button
           type="button"
-          onClick={() => onAddToCart?.(product)}
-          className={`mt-auto flex w-full items-center justify-center gap-1.5 rounded-md bg-primary font-medium text-white transition-colors hover:bg-primary-hover ${
-            featured ? "mt-4 h-9 text-sm" : "mt-1 h-6 text-[11px]"
+          disabled={isInCart}
+          onClick={() => {
+            if (!isInCart) {
+              onAddToCart?.(product);
+            }
+          }}
+          className={`mt-auto flex w-full items-center justify-center gap-1.5 rounded-sm font-medium transition-colors ${
+            featured ? "mt-4 h-9 text-sm" : "mt-1 h-7 text-[11px]"
+          } ${
+            isInCart
+              ? "cursor-not-allowed bg-gray-200 text-gray-500"
+              : "bg-primary text-white hover:bg-primary-hover"
           }`}
         >
-          <ShoppingCart
-            size={featured ? 15 : 12}
-            aria-hidden="true"
-          />
-          Add to Cart
+          {isInCart ? (
+            <>
+              <Check
+                size={featured ? 15 : 12}
+                aria-hidden="true"
+              />
+              Added to Cart
+            </>
+          ) : (
+            <>
+              <ShoppingCart
+                size={featured ? 15 : 12}
+                aria-hidden="true"
+              />
+              Add to Cart
+            </>
+          )}
         </button>
       </div>
     </article>
